@@ -7,10 +7,11 @@ Adds a tab to the webui that allows the user to generate a random prompt from te
 ## Installation:
 
 1. Install [AUTOMATIC1111's Stable Diffusion Webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui)
-2. Clone this repository '/extension' into the `extensions` folder inside the webui
+2. Clone this repository into the `extensions` folder inside the webui
 
 ## Usage:
 
 1. Click Random Generator Tab 
 2. Click Generate and wait
+
 
