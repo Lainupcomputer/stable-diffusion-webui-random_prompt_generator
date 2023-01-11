@@ -1,5 +1,0 @@
-raytracing
-light rays
-insanely detailed, bloom
-artistic shadows
-oil painting
