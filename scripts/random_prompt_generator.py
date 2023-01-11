@@ -1,5 +1,3 @@
-from typing import Union, Any
-
 import gradio as gr
 import modules
 from modules import script_callbacks
@@ -59,16 +57,18 @@ def on_ui_tabs():
     txt2img_prompt = modules.ui.txt2img_paste_fields[0][0]
 
     with gr.Blocks(analytics_enabled=False) as prompt_generator:
-        with gr.Column():
-            with gr.Row():
-                gen_btn = gr.Button(value="Generate", elem_id="generate_button")
-
-        with gr.Column(visible=False) as results_col:
-            results = gr.Text(label="Results", elem_id="Results_textBox", interactive=False)
-        with gr.Column():
-            warning = gr.HTML(value="Send the first generated prompt to:", visible=False)
-            with gr.Row():
-                send_to_txt2img = gr.Button('Send to txt2img', visible=False)
+        with gr.Tabs():
+            with gr.TabItem("Generator"):
+                with gr.Column():
+                    gen_btn = gr.Button(value="Generate", elem_id="generate_button")
+                with gr.Column(visible=False) as results_col:
+                    results = gr.Text(label="Results", elem_id="Results_textBox", interactive=False)
+                with gr.Column():
+                    warning = gr.HTML(value="Send the first generated prompt to:", visible=False)
+                    with gr.Row():
+                        send_to_txt2img = gr.Button('Send to txt2img', visible=False)
+            with gr.TabItem("Configuration"):
+                gr.Markdown("this is a demo")
 
         def generate_prompts():
             swap.data = get_prompts()
