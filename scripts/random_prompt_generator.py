@@ -11,6 +11,7 @@ class Swap:
         # extension folder
         self.script_path = "./extensions/stable-diffusion-webui-random_prompt_generator"
         self.static_path = "./static.txt"
+        self.static_negative_path = "./static-negative.txt"
         self.prompt_path = "/Prompts/"
         # variable to store generated prompts
         self.prompt_output = ""
@@ -43,6 +44,12 @@ class Swap:
     def add_static_prompts(self):
         for line in self.load_from_fs(self.script_path + self.static_path):
             self.prompt_output = self.prompt_output + line + ","
+
+    def get_static_negative_prompts(self):
+        prompts_string = ""
+        for line in self.load_from_fs(self.script_path + self.static_negative_path):
+            prompts_string = prompts_string + line + ","
+            return prompts_string[:-1]
 
     def get_folder_prompts(self):
         # if nsfw
@@ -85,6 +92,10 @@ def add_to_prompt():
     return swap.prompt_output
 
 
+def add_to_negative_prompt():
+    return swap.get_static_negative_prompts()
+
+
 def switch_mode():
     swap.switch_mode()
     if swap.mode:
@@ -95,6 +106,7 @@ def switch_mode():
 
 def on_ui_tabs():
     txt2img_prompt = modules.ui.txt2img_paste_fields[0][0]
+    txt2img_negative_prompt = modules.ui.txt2img_paste_fields[1][0]
 
     with gr.Blocks(analytics_enabled=False) as prompt_generator:
         with gr.Tabs():
@@ -107,7 +119,7 @@ def on_ui_tabs():
                     send_to_txt2img = gr.Button('Send to txt2img', visible=False)
             with gr.TabItem("Configuration"):
                 with gr.Row():
-                    mode = gr.Text(label="NSFW Mode", elem_id="mode_textBox", interactive=False)
+                    mode = gr.Text(label="NSFW Mode", placeholder="",  elem_id="mode_textBox", interactive=False)
                     sw_btn = gr.Button(value="Switch SFW / NSFW", elem_id="sw_btn")
 
         def generate_prompts():
@@ -121,6 +133,7 @@ def on_ui_tabs():
         sw_btn.click(fn=switch_mode, outputs=[mode])
         gen_btn.click(fn=generate_prompts, outputs=[results, send_to_txt2img, results_col])
         send_to_txt2img.click(add_to_prompt, outputs=[txt2img_prompt])
+        send_to_txt2img.click(add_to_negative_prompt, outputs=[txt2img_negative_prompt])
         send_to_txt2img.click(None, _js='switch_to_txt2img', inputs=None, outputs=None)
     return (prompt_generator, "Random-Prompt-Gen", "Random-Prompt-Gen"),
 
