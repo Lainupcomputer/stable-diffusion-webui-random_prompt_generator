@@ -8,49 +8,67 @@ import random
 class Swap:
 
     def __init__(self):
-        self.data = ""
+        # extension folder
+        self.script_path = "./extensions/stable-diffusion-webui-random_prompt_generator"
+        self.static_path = "./static.txt"
+        self.prompt_path = "/Prompts/"
+        # variable to store generated prompts
+        self.prompt_output = ""
+        self.file_list = []
+        self.choose_prompts = []
+
+    @staticmethod
+    def load_from_fs(filename):
+        """
+        open a data file from Folder and return a list without new line
+        :param filename: path for file to read
+        :return: list of read data
+        """
+        output = []
+        with open(filename, "r") as f:
+            lines = f.readlines()
+            for line in lines:
+                # remove new line
+                sl = line.split("\n")
+                output.append(sl[0])
+            return output
+
+    def reset(self):
+        self.prompt_output = ""
+        self.file_list = []
+        self.choose_prompts = []
+
+    def add_static_prompts(self):
+        for line in self.load_from_fs(self.script_path + self.static_path):
+            self.prompt_output = self.prompt_output + line + ","
+
+    def get_folder_prompts(self):
+        for file_path in glob.glob(self.script_path + self.prompt_path + "*.txt"):
+            self.file_list.append(self.load_from_fs(file_path))
+
+    def choose_prompt(self):
+        for prompts in self.file_list:
+            self.choose_prompts.append(random.choice(prompts))
+
+    def format_prompts(self):
+        for prompt in self.choose_prompts:
+            self.prompt_output = self.prompt_output + prompt + ","
+
+        self.prompt_output = self.prompt_output[:-1]
+
+    def run(self):
+        self.reset()
+        self.add_static_prompts()
+        self.get_folder_prompts()
+        self.choose_prompt()
+        self.format_prompts()
 
 
 swap = Swap()
 
 
-def get_prompts():
-    prompt_lists = []
-    final_prompts = []
-    prompt_str = ""
-    script_path = "./extensions/stable-diffusion-webui-random_prompt_generator"
-    static_prompts = open_file(script_path + "./static.txt")
-    prompt_folder = "/Prompts/*.txt"
-    file_paths = glob.glob(script_path + prompt_folder)
-
-    for static in static_prompts:
-        prompt_str = prompt_str + static + ", "
-
-    for path in file_paths:
-        prompt_lists.append(open_file(path))
-
-    for prompt_list in prompt_lists:
-        final_prompts.append(random.choice(prompt_list))
-
-    for prompt in final_prompts:
-        prompt_str = prompt_str + prompt + ", "
-
-    return prompt_str
-
-
-def open_file(filename):
-    # open a file from fs and read data to type:list[]
-    data_output = []
-    with open(filename, "r")as f:
-        lines = f.readlines()
-        for line in lines:
-            sl = line.split("\n")
-            data_output.append(sl[0])
-        return data_output
-
-
 def add_to_prompt():
-    return swap.data
+    return swap.prompt_output
 
 
 def on_ui_tabs():
@@ -71,8 +89,8 @@ def on_ui_tabs():
                 gr.Markdown("this is a demo")
 
         def generate_prompts():
-            swap.data = get_prompts()
-            return {results: swap.data,
+            swap.run()
+            return {results: swap.prompt_output,
                     send_to_txt2img: gr.update(visible=True),
                     results_col: gr.update(visible=True),
                     warning: gr.update(visible=True)
