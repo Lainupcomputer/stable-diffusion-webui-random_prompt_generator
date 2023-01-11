@@ -43,7 +43,7 @@ class Swap:
 
     def add_static_prompts(self):
         for line in self.load_from_fs(self.script_path + self.static_path):
-            self.prompt_output = self.prompt_output + line + ","
+            self.prompt_output = self.prompt_output + line + ", "
 
     def get_static_negative_prompts(self):
         prompts_string = ""
