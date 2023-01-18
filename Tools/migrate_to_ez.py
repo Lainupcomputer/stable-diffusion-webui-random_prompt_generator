@@ -3,7 +3,7 @@ import sys
 try:
     from ez_storage.ez_storage import Ez_Storage
 except ModuleNotFoundError:
-    print("ez_storage module is missing (pip install ez-storage)")
+    print("ez_storage module is missing (pip install ez-storage==1.3.2)")
 
 
 SPACER = "-" * 50

@@ -7,7 +7,7 @@ import random
 try:
     from ez_storage.ez_storage import Ez_Storage
 except ModuleNotFoundError:
-    print("ez_storage module is missing (pip install ez-storage)")
+    print("ez_storage module is missing (pip install ez-storage==1.3.2)")
 
 default = Ez_Storage("./extensions/stable-diffusion-webui-random_prompt_generator/Prompts/default.ezs")
 
