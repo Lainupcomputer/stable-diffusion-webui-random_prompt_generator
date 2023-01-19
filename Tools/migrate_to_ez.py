@@ -5,7 +5,6 @@ try:
 except ModuleNotFoundError:
     print("ez_storage module is missing (pip install ez-storage==1.3.2)")
 
-
 SPACER = "-" * 50
 
 
@@ -71,6 +70,7 @@ if len(sys.argv) > 1:
                 print(SPACER)
                 print(f"Try to import from: Folder:'/{path}' to '{prefix}'")
                 import glob
+
                 for file_path in glob.glob(path + "/" + "*.txt"):
                     paths_got.append((file_path, read_file(file_path)))
                 print(f"Got {len(paths_got)} files in Folder.")
