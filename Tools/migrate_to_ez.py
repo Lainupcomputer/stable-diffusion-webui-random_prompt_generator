@@ -40,6 +40,18 @@ def get_input(hint=None, mode="y_n"):
         return i
 
 
+def check_static_amt():
+    try:
+        amt_pos = len(default.get_storage(mode="l", obj="static_positive"))
+    except KeyError:
+        amt_pos = 0
+    try:
+        amt_neg = len(default.get_storage(mode="l", obj="static_negative"))
+    except KeyError:
+        amt_neg = 0
+    return amt_pos, amt_neg
+
+
 if len(sys.argv) > 1:
     if sys.argv[1] == "--help":
         print("HELP PAGE:")
