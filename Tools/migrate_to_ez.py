@@ -33,6 +33,9 @@ def get_input(hint=None, mode="y_n"):
             return False
         else:
             return i
+    if mode == "s":
+        return i
+
     else:
         return i
 
