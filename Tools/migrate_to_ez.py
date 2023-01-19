@@ -21,6 +21,8 @@ def read_file(file_path):
 
 def get_input(hint=None, mode="y_n"):
     i = input(hint)
+    if i == "-q":
+        sys.exit()
     if mode == "y_n":
         if i == "y":
             return True
