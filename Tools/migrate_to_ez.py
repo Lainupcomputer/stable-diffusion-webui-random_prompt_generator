@@ -117,30 +117,32 @@ else:
     print("migrate_to_ez:")
     print(SPACER)
     # ask static_positive
-    enable_static_positive = get_input("enable: add static prompt ?\n(y/n):\n")
-    if enable_static_positive:
-        try:
-            static_positive = default.get_storage(mode="l", obj="static_positive")
-            print(f"Found {len(static_positive)} Prompts.")
-        except KeyError:
-            print(f"Found 0 Prompts.")
-        finally:
-            static_positive_import = get_input("import static positive prompts?\n(m/f/n)\n", mode="i")
+    while not skip_static_pos:
+        default.add_storage(mode="o", obj="Settings", data="enable_static_positive",
+                            value=get_input("enable: add static positive prompt to generator?(y/n):\n"), override=True)
+        static_positive_import = ""
+        while static_positive_import == "":
+            static_positive_import = get_input("import static positive prompts from ?(m/f/s):\n", mode="i")
             if static_positive_import == "m":
-                inp = get_input("enter static_positive prompts:\nput multiple separated by ';':\n", mode="r")
+                inp = get_input("enter static_positive prompts:\nput multiple separated by ';':\n", mode="s")
                 data = inp.split(";")
             elif static_positive_import == "f":
-                path = get_input("enter file name:\nplace file in '/Tools':\n", mode="r")
+                path = get_input("enter file name:\nplace file in '/Tools':\n", mode="s")
                 data = read_file(path)
-            else:
+            elif static_positive_import == "s":
+                skip_static_pos = True
                 data = None
-        if get_input(f"add: {data} to 'static_positive'?\n(y/n)\n"):
-            default.add_storage(mode="l", obj="static_positive", data=data)
-    elif not enable_static_positive:
-        pass
-    default.add_storage(mode="o", obj="Settings", data="enable_static_positive", value=enable_static_positive,
-                        override=True)
-    print(SPACER)
+                print("skipped static positive import.")
+                break
+            else:
+                data = ""
+                print("Invalid Argument: retry")
+        if not skip_static_pos:
+            if get_input(f"add: {data} to 'static_positive'?\n(y/n)\n"):
+                default.add_storage(mode="l", obj="static_positive", data=data)
+                print("SAVED")
+                skip_static_pos = True
+        print(SPACER)
     # ask static_negative
     enable_static_negative = get_input("enable: add static negative prompt ?\n(y/n):\n")
     if enable_static_negative:
