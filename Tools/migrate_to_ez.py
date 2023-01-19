@@ -116,6 +116,25 @@ else:
     default = Ez_Storage("default.ezs")
     print("migrate_to_ez:")
     print(SPACER)
+    amt_pos, amt_neg = check_static_amt()
+    print(f"Found {amt_pos} Positive and {amt_neg} Negative Prompts")
+    print(SPACER)
+    skip_static_pos = False
+    skip_static_neg = False
+    if amt_pos >= 1 and amt_neg >= 1:
+        if get_input("skip static configuration?(y/n):\n"):
+            skip_static_pos = True
+            skip_static_neg = True
+    elif amt_pos == 0 and amt_neg >= 1:
+        if get_input("skip static negative configuration?(y/n):\n"):
+            skip_static_neg = True
+    elif amt_neg == 0 and amt_pos >= 1:
+        if get_input("skip static positive configuration?(y/n):\n"):
+            skip_static_pos = True
+    else:
+        skip_static_pos = False
+        skip_static_neg = False
+
     # ask static_positive
     while not skip_static_pos:
         default.add_storage(mode="o", obj="Settings", data="enable_static_positive",
