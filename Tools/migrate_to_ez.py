@@ -144,36 +144,38 @@ else:
                 skip_static_pos = True
         print(SPACER)
     # ask static_negative
-    enable_static_negative = get_input("enable: add static negative prompt ?\n(y/n):\n")
-    if enable_static_negative:
-        try:
-            static_negative = default.get_storage(mode="l", obj="static_negative")
-            print(f"Found {len(static_negative)} Prompts.")
-        except KeyError:
-            print(f"Found 0 Prompts.")
-        finally:
-            static_negative_import = get_input("import static negative prompts?\n(m/f/n)\n", mode="i")
+    while not skip_static_neg:
+        default.add_storage(mode="o", obj="Settings", data="enable_static_negative",
+                            value=get_input("enable: fill static negative prompt?(y/n):\n"), override=True)
+        static_negative_import = ""
+        while static_negative_import == "":
+            static_negative_import = get_input("import static negative prompts?\n(m/f/s)\n", mode="i")
             if static_negative_import == "m":
                 inp = get_input("enter static_negative prompts:\nput multiple separated by ';':\n", mode="i")
                 data = inp.split(";")
             elif static_negative_import == "f":
                 path = get_input("enter file name:\nplace file in '/Tools':\n", mode="p")
                 data = read_file(path)
-            else:
+            elif static_negative_import == "s":
+                skip_static_neg = True
                 data = None
-        if get_input(f"add: {data} to 'static_negative'?\n(y/n)\n"):
-            default.add_storage(mode="l", obj="static_negative", data=data)
-    elif not enable_static_negative:
-        pass
-    default.add_storage(mode="o", obj="Settings", data="enable_static_negative", value=enable_static_negative,
-                        override=True)
+                print("skipped static negative import.")
+                break
+            else:
+                data = ""
+                print("Invalid Argument: retry")
+
+            if not skip_static_neg:
+                if get_input(f"add: {data} to 'static_negative'?\n(y/n)\n"):
+                    default.add_storage(mode="l", obj="static_negative", data=data)
+                    print("SAVED")
+                    skip_static_neg = True
+            print(SPACER)
+    amt_pos, amt_neg = check_static_amt()
     print(SPACER)
-    print("static prompts setup: done")
-    try:
-        print(f'Found {len(default.get_storage(mode="l", obj="static_negative"))} negative Prompts.')
-        print(f'Found {len(default.get_storage(mode="l", obj="static_positive"))} positive Prompts.')
-    except KeyError:
-        pass
+    print(f"Registered {amt_pos} Positive Prompts.\nRegistered {amt_neg} Negative Prompts.")
+    print(SPACER)
+
     print(SPACER)
     while True:
         print("import mode:")
