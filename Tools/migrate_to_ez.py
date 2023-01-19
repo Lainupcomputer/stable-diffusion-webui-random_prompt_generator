@@ -195,7 +195,6 @@ else:
     print(f"Registered {amt_pos} Positive Prompts.\nRegistered {amt_neg} Negative Prompts.")
     print(SPACER)
 
-    print(SPACER)
     while True:
         print("import mode:")
         name = input("enter category name:\n")
