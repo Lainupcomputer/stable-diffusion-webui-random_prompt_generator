@@ -200,12 +200,15 @@ else:
         print("import mode:")
         name = input("enter category name:\n")
         weight = input("enter category weight:\n(0-10)\n")
-        i = get_input("is nsfw ?\n")
-        if i:
+        i = get_input("Enter prefix (N/S/text)\n", mode="i")
+        if i == "N":
             prefix = "nsfw_"
-        else:
+        elif i == "S":
             prefix = "sfw_"
-        ipt = get_input("import from?\n(m/f)\n", mode="i")
+        else:
+            prefix = i + "_"
+
+        ipt = get_input("import from?(m/f)\n", mode="i")
         if ipt == "m":
             inp = get_input("enter prompts:\nput multiple separated by ';':\n", mode="i")
             data = inp.split(";")
