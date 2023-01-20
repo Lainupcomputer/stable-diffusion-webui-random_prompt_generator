@@ -92,6 +92,7 @@ if len(sys.argv) > 1:
                 for file_path in glob.glob(path + "/" + "*.txt"):
                     paths_got.append((file_path, read_file(file_path)))
                 print(f"Got {len(paths_got)} files in Folder.")
+                storage.add_storage(mode="l", obj=f"prefix_index", data=[f"{prefix}registered_prompts"])
                 for raw_path, data in paths_got:
                     array = {}
                     frm_path = raw_path.split("\\")
