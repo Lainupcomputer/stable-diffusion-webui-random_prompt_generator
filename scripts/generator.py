@@ -9,16 +9,13 @@ class Generator:
         self.positive_str_output = ""
         self.negative_str_output = ""
 
-    def run(self, nsfw=False, check_for_duplicates=False):
+    def run(self, prefix="", check_for_duplicates=False):
         self.positive_str_output = ""
         self.negative_str_output = ""
-        if nsfw:
-            prompt_dict = "nsfw_registered_prompts"
-        else:
-            prompt_dict = "sfw_registered_prompts"
+        self.chosen_prompts = []
 
         try:
-            for x in self.storage_container.get_storage(mode="a", obj=prompt_dict):
+            for x in self.storage_container.get_storage(mode="a", obj=prefix):
                 for k, v in x.items():
                     prompts = self.storage_container.get_storage(mode="l", obj=k)
                     for i in range(int(v)):
@@ -61,7 +58,7 @@ class Generator:
 
 if __name__ == "__main__":
     g = Generator(Ez_Storage("./default.ezs"))
-    g.run(nsfw=False, check_for_duplicates=True)
+    g.run(prefix="sfw_registered_prompts", check_for_duplicates=True)
     print(f"NR:{len(g.chosen_prompts)}")
     print(f"POSITIVE_OUTPUT={g.get_positive_str()}")
     print(f"Negative_OUTPUT={g.get_negative_str()}")
